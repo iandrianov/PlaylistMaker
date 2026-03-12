@@ -3,6 +3,7 @@ package com.example.playlistmaker
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -11,15 +12,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<ImageView>(R.id.search).setOnClickListener {
+        findViewById<LinearLayout>(R.id.search).setOnClickListener {
             openActivity(SearchActivity::class.java)
         }
 
-        findViewById<ImageView>(R.id.media).setOnClickListener {
+        findViewById<LinearLayout>(R.id.media).setOnClickListener {
             openActivity(MediaActivity::class.java)
         }
 
-        findViewById<ImageView>(R.id.engine).setOnClickListener {
+        findViewById<LinearLayout>(R.id.engine).setOnClickListener {
             openActivity(SettingsActivity::class.java)
         }
     }
