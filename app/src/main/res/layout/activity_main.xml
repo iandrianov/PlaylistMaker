@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_blue"
     android:orientation="vertical"
+    android:background="@color/background_main"
     android:padding="20dp">
 
     <!-- Заголовок -->
@@ -11,29 +12,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title_playlist"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnBackground"
         android:textSize="22sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
-    <!-- Контейнер для карточек -->
+    <!-- Контейнер -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="33dp"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="33dp">
 
-        <!-- Карточка 1 -->
+        <!-- КНОПКА 1 -->
         <LinearLayout
+            style="@style/MainScreenButton"
+            android:id="@+id/search"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_card_white"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:id="@+id/search">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:layout_width="@dimen/icon_size"
@@ -41,31 +37,24 @@
                 android:src="@drawable/ic_search"/>
 
             <TextView
+                style="@style/MainScreenButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:text="@string/search"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textColor="@color/black"/>
         </LinearLayout>
 
-        <!-- Отступ -->
         <Space
             android:layout_width="match_parent"
-            android:layout_height="20dp" />
+            android:layout_height="20dp"/>
 
-        <!-- Карточка 2 -->
+        <!-- КНОПКА 2 -->
         <LinearLayout
+            style="@style/MainScreenButton"
+            android:id="@+id/media"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_card_white"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:id="@+id/media">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:layout_width="@dimen/icon_size"
@@ -73,31 +62,24 @@
                 android:src="@drawable/ic_media"/>
 
             <TextView
+                style="@style/MainScreenButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:text="@string/media"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textColor="@color/black"/>
         </LinearLayout>
 
-        <!-- Отступ -->
         <Space
             android:layout_width="match_parent"
-            android:layout_height="20dp" />
+            android:layout_height="20dp"/>
 
-        <!-- Карточка 3 -->
+        <!-- КНОПКА 3 -->
         <LinearLayout
+            style="@style/MainScreenButton"
+            android:id="@+id/engine"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_card_white"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:id="@+id/engine">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:layout_width="@dimen/icon_size"
@@ -105,13 +87,12 @@
                 android:src="@drawable/ic_engine"/>
 
             <TextView
+                style="@style/MainScreenButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:text="@string/engine"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textColor="@color/black"/>
         </LinearLayout>
 
     </LinearLayout>

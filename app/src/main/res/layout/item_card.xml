@@ -5,7 +5,7 @@
         android:id="@+id/cardRoot"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:background="@drawable/bg_card_white"
+        android:background="@drawable/bg_card"
         android:gravity="center"
         android:orientation="horizontal"
         android:clickable="true"
@@ -23,7 +23,7 @@
             android:layout_marginStart="12dp"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="#1A1B22" />
+            android:textColor="@color/text_primary" />
 
     </LinearLayout>
 
