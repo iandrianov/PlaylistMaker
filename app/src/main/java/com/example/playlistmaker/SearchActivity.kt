@@ -40,7 +40,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         clearButton.setOnClickListener {
-            searchInput.setText("")
+            searchInput.text = ""
             searchInput.clearFocus()
 
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
