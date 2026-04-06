@@ -27,5 +27,6 @@ class SettingsActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             finish()
         }
+        //Todo: test
     }
 }
