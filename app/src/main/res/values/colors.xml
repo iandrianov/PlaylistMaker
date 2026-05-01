@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- BASIC -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="background_blue">#3772E7</color>
+
+    <!-- BACKGROUND -->
+    <color name="background">#FFFFFF</color>
+    <color name="background_main">#3772E7</color>
+
+    <!-- SURFACES -->
+    <color name="surface_light">#FFFFFF</color>
+    <color name="dark_surface">#1E1E1E</color>
+
+    <!-- ICONS -->
+    <color name="icon_light">#000000</color>
+    <color name="icon_dark">#FFFFFF</color>
+
+    <!-- TEXT -->
+    <color name="text_primary">#000000</color>
+    <color name="text_primary_dark">#FFFFFF</color>
+
 </resources>
