@@ -4,7 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -12,17 +15,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<LinearLayout>(R.id.search).setOnClickListener {
+        findViewById<MaterialButton>(R.id.search).setOnClickListener {
             openActivity(SearchActivity::class.java)
         }
 
-        findViewById<LinearLayout>(R.id.media).setOnClickListener {
+        findViewById<MaterialButton>(R.id.media).setOnClickListener {
             openActivity(MediaActivity::class.java)
         }
 
-        findViewById<LinearLayout>(R.id.engine).setOnClickListener {
+        findViewById<MaterialButton>(R.id.engine).setOnClickListener {
             openActivity(SettingsActivity::class.java)
         }
+
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = getString(R.string.title_playlist)
     }
 
     private fun openActivity(activity: Class<*>) {

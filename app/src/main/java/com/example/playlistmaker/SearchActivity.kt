@@ -10,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 
 class SearchActivity : AppCompatActivity() {
@@ -33,12 +34,9 @@ class SearchActivity : AppCompatActivity() {
         val searchInput = findViewById<TextView>(R.id.searchInput)
 
         searchInput.doOnTextChanged { text, _, _, _ ->
-            clearButton.visibility = if (text.isNullOrEmpty()) {
-                View.GONE
-            } else {
-                View.VISIBLE
-            }
+            clearButton.isVisible = !text.isNullOrEmpty()
         }
+
         clearButton.setOnClickListener {
             searchInput.setText("")
             searchInput.clearFocus()
