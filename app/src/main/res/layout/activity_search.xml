@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <!-- Заголовок -->
@@ -18,7 +19,8 @@
             android:id="@+id/backButton"
             android:layout_width="@dimen/back_arrow"
             android:layout_height="@dimen/back_arrow"
-            android:src="@drawable/ic_back_arrow_48" />
+            android:src="@drawable/ic_back_arrow_48"
+            app:tint="?attr/colorOnBackground" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -77,5 +79,11 @@
             app:tint="#9E9E9E" />
 
     </FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewTracks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        tools:listitem="@layout/item_track"/>
 
 </LinearLayout>
