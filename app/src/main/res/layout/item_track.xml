@@ -1,6 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="12dp">
 
@@ -19,27 +23,26 @@
 
         <TextView
             android:id="@+id/tvTrackName"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvArtistName"
+            android:id="@+id/tvTrackInfo"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/tvTrackTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/item_arraw_forward"
+        android:id="@+id/item_arrow_forward"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_arrow_forward_24_24" />
+        android:src="@drawable/ic_arrow_forward_24_24"
+        app:tint="?attr/colorOnBackground" />
 
 </LinearLayout>

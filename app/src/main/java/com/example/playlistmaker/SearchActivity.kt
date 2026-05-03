@@ -52,7 +52,7 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.adapter = TracksAdapter(tracks)
     }
 
-    val tracks = arrayListOf(
+    val tracks = mutableListOf(
         Track(
             trackName = "Smells Like Teen Spirit",
             artistName = "Nirvana",

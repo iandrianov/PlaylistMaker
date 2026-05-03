@@ -16,9 +16,11 @@
     <!-- ICONS -->
     <color name="icon_light">#000000</color>
     <color name="icon_dark">#FFFFFF</color>
+    <color name="icon_search_field">#9E9E9E</color>
 
     <!-- TEXT -->
     <color name="text_primary">#000000</color>
     <color name="text_primary_dark">#FFFFFF</color>
+    <color name="text_field_input">#1A1B22</color>
 
 </resources>
