@@ -4,6 +4,7 @@
     <!-- BACKGROUND -->
     <color name="background">#1A1B22</color>
     <color name="background_main">#1A1B22</color>
+    <color name="background_search">#1A1B22</color>
 
     <!-- BASIC COLORS -->
     <color name="black">#FF000000</color>
@@ -19,6 +20,7 @@
     <color name="icon_light">#000000</color>
     <color name="icon_dark">#FFFFFF</color>
     <color name="icon_search_field">#1A1B22</color>
+    <color name="icon_arrow_forward_tint">#FFFFFF</color>
 
     <!-- TEXT  -->
     <color name="text_primary">#FFFFFF</color>
