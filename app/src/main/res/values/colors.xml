@@ -8,6 +8,7 @@
     <!-- BACKGROUND -->
     <color name="background">#FFFFFF</color>
     <color name="background_main">#3772E7</color>
+    <color name="background_search">#FFFFFF</color>
 
     <!-- SURFACES -->
     <color name="surface_light">#FFFFFF</color>
@@ -16,9 +17,12 @@
     <!-- ICONS -->
     <color name="icon_light">#000000</color>
     <color name="icon_dark">#FFFFFF</color>
+    <color name="icon_search_field">#9E9E9E</color>
+    <color name="icon_arrow_forward_tint">#AEAFB4</color>
 
     <!-- TEXT -->
     <color name="text_primary">#000000</color>
     <color name="text_primary_dark">#FFFFFF</color>
+    <color name="text_field_input">#1A1B22</color>
 
 </resources>
