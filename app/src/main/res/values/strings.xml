@@ -14,5 +14,9 @@
     <string name="email_text" translatable="false">Привет!\n\n" +
     "Посмотри курс по Android-разработке:\n" +
     "https://practicum.yandex.ru/android-developer/</string>
+    <string name="nothing_found_music" translatable="false">Ничего не нашлось</string>
+    <string name="network_error_music" translatable="false">Проблемы со связью\n\n
+    Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="retry" translatable="false">Обновить</string>
 </resources>
 
