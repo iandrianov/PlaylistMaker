@@ -30,7 +30,8 @@
         <com.google.android.material.button.MaterialButton
             style="@style/MainScreenButton"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="@string/search"
             app:icon="@drawable/ic_search"
             app:iconPadding="12dp"
@@ -48,7 +49,8 @@
             android:id="@+id/media"
             style="@style/MainScreenButton"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="@string/media"
             app:icon="@drawable/ic_media"
             app:iconGravity="textStart"
@@ -62,7 +64,8 @@
             android:id="@+id/engine"
             style="@style/MainScreenButton"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="@string/engine"
             app:icon="@drawable/ic_engine"
             app:iconGravity="textStart"
@@ -74,12 +77,13 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/filmSearch"
             style="@style/MainScreenButton"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_width="0dp"
+            android:layout_weight="0"
             android:text="Поиск фильмов"
             app:icon="@drawable/ic_engine"
             app:iconGravity="textStart"
-            app:iconTint="@null"/>
+            app:iconTint="@null"
+            android:visibility="invisible"/>
 
     </LinearLayout>
 

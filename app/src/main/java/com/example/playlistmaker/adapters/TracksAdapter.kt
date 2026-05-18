@@ -44,6 +44,7 @@ class TracksAdapter(
         Glide.with(holder.itemView)
             .load(track.artworkUrl100)
             .transform(RoundedCorners(2.dpToPx(holder.itemView.context)))
+            .placeholder(R.drawable.ic_placeholder)
             .error(R.drawable.ic_placeholder)
             .into(holder.ivArtWork)
     }
