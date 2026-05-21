@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,9 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.R
+import java.text.SimpleDateFormat
+import java.util.Locale
+
 
 class TracksAdapter(
-    private val tracks: List<Track>
+    private var tracks: List<com.example.playlistmaker.model.Track>
 ) : RecyclerView.Adapter<TracksAdapter.TrackViewHolder>() {
 
     class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -31,13 +35,23 @@ class TracksAdapter(
         val track = tracks[position]
 
         holder.tvTrackName.text = track.trackName
-        holder.tvTrackInfo.text = "${track.artistName} · ${track.trackTime}"
+        holder.tvTrackInfo.text = "${track.artistName} · " +
+                "${
+                    SimpleDateFormat("mm:ss", Locale.getDefault())
+                        .format(track.trackTimeMillis)
+                }"
 
         Glide.with(holder.itemView)
             .load(track.artworkUrl100)
             .transform(RoundedCorners(2.dpToPx(holder.itemView.context)))
+            .placeholder(R.drawable.ic_placeholder)
             .error(R.drawable.ic_placeholder)
             .into(holder.ivArtWork)
+    }
+
+    fun updateTraks(newTraks: List<com.example.playlistmaker.model.Track>) {
+        tracks = newTraks
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = tracks.size

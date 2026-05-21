@@ -1,16 +1,16 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlistmaker.R
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 
 class MainActivity : AppCompatActivity() {
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -25,6 +25,10 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<MaterialButton>(R.id.engine).setOnClickListener {
             openActivity(SettingsActivity::class.java)
+        }
+
+        this.findViewById<MaterialButton>(R.id.filmSearch).setOnClickListener {
+            openActivity(FilmsSearchActivity::class.java)
         }
 
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
