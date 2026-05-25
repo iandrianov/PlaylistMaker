@@ -10,12 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.model.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 
 class TracksAdapter(
-    private var tracks: List<com.example.playlistmaker.model.Track>
+    var tracks: List<Track>,
+    private val onTrackClick: (Track) -> Unit
 ) : RecyclerView.Adapter<TracksAdapter.TrackViewHolder>() {
 
     class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -47,9 +49,13 @@ class TracksAdapter(
             .placeholder(R.drawable.ic_placeholder)
             .error(R.drawable.ic_placeholder)
             .into(holder.ivArtWork)
+
+        holder.itemView.setOnClickListener {
+            onTrackClick(track)
+        }
     }
 
-    fun updateTraks(newTraks: List<com.example.playlistmaker.model.Track>) {
+    fun updateTracks(newTraks: List<com.example.playlistmaker.model.Track>) {
         tracks = newTraks
         notifyDataSetChanged()
     }

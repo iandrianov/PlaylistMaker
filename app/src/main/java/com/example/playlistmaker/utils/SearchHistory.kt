@@ -1,0 +1,46 @@
+package com.example.playlistmaker.utils
+
+import android.content.SharedPreferences
+import com.example.playlistmaker.model.Track
+import com.google.gson.Gson
+
+
+private const val SEARCH_HISTORY_KEY = "search_history"
+private const val MAX_HISTORY_SIZE = 10
+
+class SearchHistory(
+    private val sharedPreferences: SharedPreferences
+) {
+    private val gson = Gson()
+
+    fun getTracks(): List<Track>? {
+        val json = sharedPreferences.getString(SEARCH_HISTORY_KEY, null)
+        return Gson().fromJson(json, Array<Track>::class.java)?.toList()
+    }
+
+    fun clearHistory() {
+        sharedPreferences.edit()
+            .remove(SEARCH_HISTORY_KEY)
+            .apply()
+    }
+
+    fun addTrack(track: Track) {
+        val tracks = getTracks()?.toMutableList()
+        tracks?.removeIf { it.trackId == track.trackId }
+
+        tracks?.add(0, track)
+
+        tracks?.size?.let {
+            if (it > MAX_HISTORY_SIZE){
+                tracks.removeAt(tracks.size-1)
+            }
+        }
+
+        saveTracks(tracks?.toList() ?: emptyList())
+    }
+
+    private fun saveTracks(tracks:List<Track>){
+        val json =  gson.toJson(tracks)
+        sharedPreferences.edit().putString(SEARCH_HISTORY_KEY,json).apply()
+    }
+}

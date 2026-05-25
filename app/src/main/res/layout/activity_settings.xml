@@ -57,10 +57,12 @@
             android:textColor="@color/text_primary"
             android:textSize="16sp" />
 
-        <Switch
-            android:id="@+id/themeSwitch"
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/themeSwitcher"
+            android:layout_gravity="end"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
