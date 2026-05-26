@@ -1,5 +1,6 @@
 package com.example.playlistmaker.activities
 
+import android.net.LinkAddress
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,10 +10,12 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -46,7 +49,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var clearButton: ImageView
     private lateinit var backButton: ImageView
     private lateinit var searchInput: EditText
-    private lateinit var historyBlock: LinearLayout
+    private lateinit var historyBlock: ConstraintLayout
     private lateinit var clearHistoryButton: Button
 
     private lateinit var searchHistory: SearchHistory
@@ -142,10 +145,10 @@ class SearchActivity : AppCompatActivity() {
 
             searchInput.setText("")
             searchInput.clearFocus()
-
+            tracksAdapter.updateTracks(emptyList())
             hideKeyboard()
 
-            showHistory()
+            showContent()
         }
 
         clearHistoryButton.setOnClickListener {

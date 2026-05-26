@@ -13,9 +13,9 @@ class SearchHistory(
 ) {
     private val gson = Gson()
 
-    fun getTracks(): List<Track>? {
+    fun getTracks(): List<Track> {
         val json = sharedPreferences.getString(SEARCH_HISTORY_KEY, null)
-        return Gson().fromJson(json, Array<Track>::class.java)?.toList()
+        return Gson().fromJson(json, Array<Track>::class.java)?.toList()?: emptyList()
     }
 
     fun clearHistory() {

@@ -19,6 +19,6 @@
     Загрузка не удалась. Проверьте подключение к интернету</string>
     <string name="retry" translatable="false">Обновить</string>
     <string name="search_history_title" translatable="false">Вы искали</string>
-    <string name="search_history_clear_button" translatable="false">Удалить историю</string>c
+    <string name="search_history_clear_button" translatable="false">Очистить историю</string>c
 </resources>
 

@@ -5,17 +5,17 @@ import androidx.appcompat.app.AppCompatDelegate
 
 const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
 const val DARK_THEME_KEY = "dark_theme"
+
 class App : Application() {
 
-    var darkTheme = false
+    private var darkTheme = false
+    private val sharedPrefs by lazy {
+        getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+    }
 
     override fun onCreate() {
         super.onCreate()
 
-        val sharedPrefs = getSharedPreferences(
-            PLAYLIST_MAKER_PREFERENCES,
-            MODE_PRIVATE
-        )
 
         darkTheme = sharedPrefs.getBoolean(DARK_THEME_KEY, false)
 
@@ -26,10 +26,6 @@ class App : Application() {
 
         darkTheme = darkThemeEnabled
 
-        val sharedPrefs = getSharedPreferences(
-            PLAYLIST_MAKER_PREFERENCES,
-            MODE_PRIVATE
-        )
 
         sharedPrefs.edit()
             .putBoolean(DARK_THEME_KEY, darkThemeEnabled)
