@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:background="@color/background_search">
 
     <!-- Заголовок -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/header"
+        android:layout_width="0dp"
         android:layout_height="56dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:paddingEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/backButton"
@@ -35,18 +39,21 @@
 
     <!-- Поиск -->
     <FrameLayout
-        android:id="@+id/root"
-        android:layout_width="match_parent"
+        android:id="@+id/searchContainer"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
-        android:elevation="2dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@drawable/bg_search"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:paddingStart="12dp"
             android:paddingEnd="36dp">
 
@@ -60,15 +67,15 @@
                 android:id="@+id/searchInput"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:hint="@string/search_hint"
-                android:inputType="text"
-                android:paddingStart="8dp"
-                android:textColor="@color/text_field_input"
-                android:textColorHint="@color/icon_search_field"
                 android:imeOptions="actionDone"
-                android:singleLine="true" />
+                android:inputType="text"
+                android:singleLine="true"
+                android:textColor="@color/text_field_input"
+                android:textColorHint="@color/icon_search_field" />
         </LinearLayout>
 
         <ImageView
@@ -80,55 +87,120 @@
             android:src="@drawable/ic_clear_40_36"
             android:visibility="gone"
             app:tint="@color/icon_search_field" />
-
     </FrameLayout>
 
+    <!-- HISTORY -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/historyBlock"
+        android:layout_width="0dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchContainer">
+
+        <!-- Заголовок -->
+        <TextView
+            android:id="@+id/historyTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/search_history_title"
+            android:textColor="@color/text_primary"
+            android:textSize="19sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Список -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/historyRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:clipToPadding="false"
+            android:overScrollMode="always"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="80dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/historyTitle"
+            tools:listitem="@layout/item_track" />
+
+        <!-- Кнопка -->
+        <Button
+            android:id="@+id/clearHistoryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="?attr/colorOnBackground"
+            android:elevation="8dp"
+            android:text="@string/search_history_clear_button"
+            android:textAllCaps="false"
+            app:cornerRadius="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- RESULTS -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTracks"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
         android:paddingHorizontal="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/historyBlock"
         tools:listitem="@layout/item_track"
-        android:background="@color/background_search"/>
+        android:paddingTop="24dp"/>
 
+    <!-- PLACEHOLDER -->
     <LinearLayout
         android:id="@+id/placeholderContainer"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
-        android:layout_width="match_parent"
-        android:background="@color/background_search">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchContainer">
 
         <ImageView
             android:id="@+id/placeholderImage"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            tools:src="@drawable/ic_search_error"/>
+            tools:src="@drawable/ic_search_error" />
 
         <TextView
             android:id="@+id/placeholderText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
             android:layout_marginTop="16dp"
-            android:gravity="center_horizontal"
-            tools:text=""
-            android:textColor="?attr/colorOnBackground"/>
+            android:gravity="center"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="18sp"
+            tools:text="@string/network_error_music" />
 
         <Button
             android:id="@+id/retryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="?attr/colorOnBackground"
             android:text="@string/retry"
             android:textAllCaps="false"
-            android:layout_marginTop="16dp"
-            android:visibility="gone"
-            android:backgroundTint="?attr/colorOnBackground"
             app:cornerRadius="16dp" />
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
