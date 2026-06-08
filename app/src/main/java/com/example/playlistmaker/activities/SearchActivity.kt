@@ -1,5 +1,6 @@
 package com.example.playlistmaker.activities
 
+import android.content.Intent
 import android.net.LinkAddress
 import android.os.Bundle
 import android.text.Editable
@@ -22,13 +23,17 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
+import com.example.playlistmaker.activities.PlayerActivity.Companion.createIntent
 import com.example.playlistmaker.adapters.TracksAdapter
+import com.example.playlistmaker.model.Track
 import com.example.playlistmaker.model.TracksSearchResponse
 import com.example.playlistmaker.network.RetrofitClient
 import com.example.playlistmaker.utils.SearchHistory
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.logging.Logger
 
 const val PLAYLIST_MAKER_PREFERENCE = "playlist_maker_preferences"
 
@@ -109,13 +114,18 @@ class SearchActivity : AppCompatActivity() {
             searchHistory.addTrack(track)
 
             showHistory()
+            startActivity(
+                createIntent(this, track)
+            )
         }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = tracksAdapter
 
         historyAdapter = TracksAdapter(emptyList()) { track ->
-            //TODO:!!!
+            startActivity(
+                createIntent(this, track)
+            )
         }
 
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
