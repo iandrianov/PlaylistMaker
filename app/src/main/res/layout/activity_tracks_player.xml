@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true"
+    android:background="@color/background_search">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -58,7 +59,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Yesterday (Remastered 2009)"
+            tools:text="Yesterday (Remastered 2009)"
             android:textSize="24sp"
             android:textStyle="bold"
             android:gravity="start"
@@ -72,7 +73,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="The Beatles"
+            android:paddingBottom="16dp"
+            tools:text="The Beatles"
             android:textSize="18sp"
             android:gravity="start"
             app:layout_constraintEnd_toStartOf="@id/guideline_end"
@@ -82,22 +84,19 @@
 
         <ImageButton
             android:id="@+id/addButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="51dp"
+            android:layout_height="51dp"
             android:layout_marginTop="30dp"
             android:background="@drawable/round_button"
             android:contentDescription="@null"
             android:src="@drawable/ic_button_plus_51_51"
-            app:layout_constraintEnd_toStartOf="@id/playButton"
-            app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@id/tv_artist" />
 
         <ImageButton
             android:id="@+id/playButton"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginHorizontal="12dp"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
             android:background="@drawable/round_button"
             android:contentDescription="@null"
             android:scaleType="centerInside"
@@ -110,15 +109,27 @@
 
         <ImageButton
             android:id="@+id/favoriteButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="51dp"
+            android:layout_height="51dp"
             android:background="@drawable/round_button"
             android:contentDescription="@null"
             android:src="@drawable/ic_button_heart_51_51"
+            android:layout_marginStart="24dp"
             app:layout_constraintBottom_toBottomOf="@id/addButton"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
-            app:layout_constraintStart_toEndOf="@id/playButton"
             app:layout_constraintTop_toTopOf="@id/addButton" />
+
+        <TextView
+            android:id="@+id/current_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            tools:text="0:30"
+            android:textSize="13sp"
+            android:textColor="?attr/colorOnBackground"
+            app:layout_constraintTop_toBottomOf="@id/playButton"
+            app:layout_constraintStart_toStartOf="@id/playButton"
+            app:layout_constraintEnd_toEndOf="@id/playButton" />
 
         <LinearLayout
             android:id="@+id/ll_duration"
@@ -128,21 +139,21 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toStartOf="@id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
-            app:layout_constraintTop_toBottomOf="@id/addButton">
+            app:layout_constraintTop_toBottomOf="@id/current_time">
 
             <TextView
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="Длительность"
-                android:textSize="16sp" />
+                android:text="@string/track_duration"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tv_duration"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="5:35"
-                android:textSize="16sp"
+                tools:text="5:35"
+                android:textSize="13sp"
                 android:gravity="end"
                 android:textColor="?attr/colorOnBackground"/>
         </LinearLayout>
@@ -160,16 +171,16 @@
             <TextView
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="Альбом"
-                android:textSize="16sp" />
+                android:text="@string/track_album"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tv_album"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Yesterday (Remastered 2009)"
-                android:textSize="16sp"
+                tools:text="Yesterday (Remastered 2009)"
+                android:textSize="13sp"
                 android:gravity="end"
                 android:textColor="?attr/colorOnBackground"/>
         </LinearLayout>
@@ -187,16 +198,16 @@
             <TextView
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="Год"
-                android:textSize="16sp" />
+                android:text="@string/track_release_date"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tv_year"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="1965"
-                android:textSize="16sp"
+                tools:text="1965"
+                android:textSize="13sp"
                 android:gravity="end"
                 android:textColor="?attr/colorOnBackground"/>
         </LinearLayout>
@@ -214,16 +225,16 @@
             <TextView
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="Жанр"
-                android:textSize="16sp" />
+                android:text="@string/track_genre"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tv_genre"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Rock"
-                android:textSize="16sp"
+                tools:text="Rock"
+                android:textSize="13sp"
                 android:gravity="end"
                 android:textColor="?attr/colorOnBackground"/>
         </LinearLayout>
@@ -243,16 +254,16 @@
             <TextView
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="Страна"
-                android:textSize="16sp" />
+                android:text="@string/track_country"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tv_country"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Великобритания"
-                android:textSize="16sp"
+                tools:text="Великобритания"
+                android:textSize="13sp"
                 android:gravity="end"
                 android:textColor="?attr/colorOnBackground"/>
         </LinearLayout>
