@@ -1,6 +1,7 @@
 package com.example.playlistmaker.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -36,7 +37,14 @@ class FilmsSearchActivity : AppCompatActivity() {
 
         // Создаем адаптер
         // Пока список пустой
-        movieAdapter = MovieAdapter(emptyList())
+        movieAdapter = MovieAdapter(emptyList()) { movie ->
+
+            val intent = Intent(this, PosterActivity::class.java)
+
+            intent.putExtra("poster", movie.image)
+
+            startActivity(intent)
+        }
 
         // Указываем RecyclerView,
         // что элементы будут идти вертикальным списком

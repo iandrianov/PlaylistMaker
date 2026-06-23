@@ -20,14 +20,21 @@
             android:name=".activities.PlayerActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.TimerActivity"
+            android:exported="true" />
+        <activity
             android:name=".activities.MediaActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.PosterActivity"
+            android:exported="false"
+            tools:ignore="MissingClass" />
         <activity
             android:name=".activities.SettingsActivity"
             android:exported="false" />
         <activity
             android:name=".activities.FilmsSearchActivity"
-            android:exported="false"
+            android:exported="true"
             tools:ignore="MissingClass" />
         <activity
             android:name=".activities.MainActivity"
