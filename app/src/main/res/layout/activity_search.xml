@@ -149,20 +149,35 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- RESULTS -->
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progressBar"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:indeterminate="false"
+        android:progress="45"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
+
+    <!-- PLACEHOLDER -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTracks"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingHorizontal="12dp"
+        android:paddingTop="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/historyBlock"
-        tools:listitem="@layout/item_track"
-        android:paddingTop="24dp"/>
+        app:layout_constraintVertical_bias="1.0"
+        tools:listitem="@layout/item_track" />
 
-    <!-- PLACEHOLDER -->
     <LinearLayout
         android:id="@+id/placeholderContainer"
         android:layout_width="0dp"

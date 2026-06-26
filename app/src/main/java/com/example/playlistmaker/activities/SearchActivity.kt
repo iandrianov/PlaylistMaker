@@ -3,6 +3,8 @@ package com.example.playlistmaker.activities
 import android.content.Intent
 import android.net.LinkAddress
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -14,6 +16,7 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -29,6 +32,7 @@ import com.example.playlistmaker.model.Track
 import com.example.playlistmaker.model.TracksSearchResponse
 import com.example.playlistmaker.network.RetrofitClient
 import com.example.playlistmaker.utils.SearchHistory
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
@@ -55,11 +59,29 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var backButton: ImageView
     private lateinit var searchInput: EditText
     private lateinit var historyBlock: ConstraintLayout
+
+    private lateinit var progressBar: CircularProgressIndicator
     private lateinit var clearHistoryButton: Button
 
     private lateinit var searchHistory: SearchHistory
 
     private var lastSearchQuery: String = ""
+
+    private val searchDebounceDelay = 2000L
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    private var isClickAllowed = true
+
+    private val CLICK_DEBOUNCE_DELAY = 1000L
+
+    private val searchRunnable = Runnable {
+        val query = searchInput.text.toString()
+
+        if (query.isNotBlank()) {
+            searchTracks(query)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,11 +127,14 @@ class SearchActivity : AppCompatActivity() {
         historyBlock = findViewById(R.id.historyBlock)
 
         clearHistoryButton = findViewById(R.id.clearHistoryButton)
+
+        progressBar = findViewById(R.id.progressBar)
     }
 
     private fun initRecyclerViews() {
 
         tracksAdapter = TracksAdapter(emptyList()) { track ->
+            if (!clickDebounce()) return@TracksAdapter
 
             searchHistory.addTrack(track)
 
@@ -123,6 +148,8 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.adapter = tracksAdapter
 
         historyAdapter = TracksAdapter(emptyList()) { track ->
+
+            if (!clickDebounce()) return@TracksAdapter
             startActivity(
                 createIntent(this, track)
             )
@@ -152,7 +179,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         clearButton.setOnClickListener {
-
+            handler.removeCallbacks(searchRunnable)
             searchInput.setText("")
             searchInput.clearFocus()
             tracksAdapter.updateTracks(emptyList())
@@ -202,6 +229,15 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.isVisible = !s.isNullOrEmpty()
 
                 showHistory()
+
+                handler.removeCallbacks(searchRunnable)
+
+                if (!s.isNullOrBlank()) {
+                    handler.postDelayed(
+                        searchRunnable,
+                        searchDebounceDelay
+                    )
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -231,6 +267,8 @@ class SearchActivity : AppCompatActivity() {
         lastSearchQuery = query
 
         historyBlock.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+
 
         RetrofitClient.musicApi.searchTracks(query)
             .enqueue(object : Callback<TracksSearchResponse> {
@@ -241,6 +279,7 @@ class SearchActivity : AppCompatActivity() {
                 ) {
 
                     if (!response.isSuccessful) {
+                        progressBar.visibility = View.GONE
                         showError()
                         return
                     }
@@ -253,7 +292,7 @@ class SearchActivity : AppCompatActivity() {
                     } else {
 
                         tracksAdapter.updateTracks(tracks)
-
+                        progressBar.visibility = View.GONE
                         showContent()
                     }
                 }
@@ -326,7 +365,7 @@ class SearchActivity : AppCompatActivity() {
     private fun showContent() {
 
         recyclerView.visibility = View.VISIBLE
-
+        progressBar.visibility = View.GONE
         placeholderContainer.visibility = View.GONE
     }
 
@@ -340,5 +379,20 @@ class SearchActivity : AppCompatActivity() {
             searchInput.windowToken,
             0
         )
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+
+        if (isClickAllowed) {
+            isClickAllowed = false
+
+            handler.postDelayed(
+                { isClickAllowed = true },
+                CLICK_DEBOUNCE_DELAY
+            )
+        }
+
+        return current
     }
 }

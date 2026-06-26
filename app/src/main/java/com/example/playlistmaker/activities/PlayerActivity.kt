@@ -2,7 +2,11 @@ package com.example.playlistmaker.activities
 
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -15,6 +19,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.adapters.dpToPx
 import com.example.playlistmaker.model.Track
+import com.example.playlistmaker.player.MediaPlayerRepository
+import com.example.playlistmaker.player.PlayerState
 import java.text.SimpleDateFormat
 import java.time.OffsetDateTime
 import java.util.Date
@@ -22,6 +28,11 @@ import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var backButton: ImageButton
+    private lateinit var playButton: ImageButton
+    private lateinit var currentTime: TextView
+
+    private val repository = MediaPlayerRepository()
+    private val handler = Handler(Looper.getMainLooper())
     companion object {
         const val EXTRA_TRACK_NAME = "extra_track_name"
         const val EXTRA_ARTIST_NAME = "extra_artist_name"
@@ -33,6 +44,7 @@ class PlayerActivity : AppCompatActivity() {
         const val EXTRA_YEAR = "extra_year"
 
         const val COVER_SIZE = "512x512bb.jpg"
+        const val PREVIEW_URL = "preview_url"
 
         fun createIntent(context: Context, track: Track): Intent {
             return Intent(context, PlayerActivity::class.java).apply {
@@ -44,6 +56,7 @@ class PlayerActivity : AppCompatActivity() {
                 putExtra(EXTRA_GENRE, track.primaryGenreName)
                 putExtra(EXTRA_YEAR, track.releaseDate)
                 putExtra(EXTRA_COUNTRY, track.country)
+                putExtra(PREVIEW_URL, track.previewUrl)
             }
         }
     }
@@ -54,9 +67,22 @@ class PlayerActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_tracks_player)
 
+        val url = intent.getStringExtra(PREVIEW_URL) ?: return
         setupInsets()
         initViews()
         initListeners()
+
+        repository.prepare(url,     onPrepared = {
+            playButton.isEnabled = true
+        },
+            onCompletion = {
+                playButton.setImageResource(R.drawable.ic_play_btn_84_84)
+                handler.removeCallbacks(updateProgressRunnable)
+                currentTime.text = "00:00"
+            }
+        )
+
+
     }
 
     private fun setupInsets() {
@@ -98,12 +124,32 @@ class PlayerActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tv_country).text =
             intent.getStringExtra(EXTRA_COUNTRY)
 
+        playButton = findViewById(R.id.playButton)
+        currentTime = findViewById(R.id.current_time)
+        currentTime.text = "00:00"
+
         loadCover(cover)
     }
 
     fun initListeners(){
         backButton.setOnClickListener {
             finish()
+        }
+
+        playButton.setOnClickListener {
+                when(repository.getPlayerState()){
+                    PlayerState.PAUSED, PlayerState.PREPARED -> {
+                        repository.start()
+                        handler.post(updateProgressRunnable)
+                        playButton.setImageResource(R.drawable.ic_play_button_pause_84_84)
+                    }
+                    PlayerState.PLAYING -> {
+                        repository.pause()
+                        handler.removeCallbacks(updateProgressRunnable)
+                        playButton.setImageResource(R.drawable.ic_play_btn_84_84)
+                    }
+                    PlayerState.DEFAULT -> {}
+                }
         }
     }
     private fun loadCover(cover: ImageView) {
@@ -128,5 +174,29 @@ class PlayerActivity : AppCompatActivity() {
         return dateString
             ?.let { OffsetDateTime.parse(it).year.toString() }
             ?: ""
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        handler.removeCallbacks(updateProgressRunnable)
+        repository.release()
+    }
+
+    private fun updateProgress() {
+        val position = repository.currentPosition()
+
+        currentTime.text = SimpleDateFormat(
+            "mm:ss",
+            Locale.getDefault()
+        ).format(position)
+    }
+
+    private val updateProgressRunnable = object : Runnable {
+        override fun run() {
+            updateProgress()
+
+            handler.postDelayed(this, 300)
+        }
     }
 }
