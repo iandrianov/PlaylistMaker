@@ -199,7 +199,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         retryButton.setOnClickListener {
-
+            handler.removeCallbacks(searchRunnable)
             if (lastSearchQuery.isNotEmpty()) {
                 searchTracks(lastSearchQuery)
             }
@@ -251,6 +251,7 @@ class SearchActivity : AppCompatActivity() {
                 val query = v.text.toString()
 
                 if (query.isNotBlank()) {
+                    handler.removeCallbacks(searchRunnable)
                     searchTracks(query)
                 }
 
@@ -267,7 +268,7 @@ class SearchActivity : AppCompatActivity() {
         lastSearchQuery = query
 
         historyBlock.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+        showLoading()
 
 
         RetrofitClient.musicApi.searchTracks(query)
@@ -288,6 +289,7 @@ class SearchActivity : AppCompatActivity() {
                         response.body()?.results.orEmpty()
 
                     if (tracks.isEmpty()) {
+                        progressBar.visibility = View.GONE
                         showEmpty()
                     } else {
 
@@ -301,7 +303,7 @@ class SearchActivity : AppCompatActivity() {
                     call: Call<TracksSearchResponse>,
                     t: Throwable
                 ) {
-
+                    progressBar.visibility = View.GONE
                     showError()
                 }
             })
@@ -345,7 +347,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showEmpty() {
-
+        placeholderContainer.visibility = View.VISIBLE
         showPlaceholder(
             R.drawable.ic_search_failure,
             R.string.nothing_found_music,
@@ -354,7 +356,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showError() {
-
+        placeholderContainer.visibility = View.VISIBLE
         showPlaceholder(
             R.drawable.ic_search_error,
             R.string.network_error_music,
@@ -394,5 +396,12 @@ class SearchActivity : AppCompatActivity() {
         }
 
         return current
+    }
+
+    private fun showLoading() {
+        progressBar.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
+        placeholderContainer.visibility = View.GONE
+        retryButton.visibility = View.GONE
     }
 }
