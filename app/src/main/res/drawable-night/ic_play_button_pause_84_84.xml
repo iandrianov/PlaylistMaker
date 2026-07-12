@@ -1,0 +1,22 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="84dp"
+    android:height="84dp"
+    android:viewportWidth="84"
+    android:viewportHeight="84">
+
+    <!-- Круг -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M42,0C18.8,0 0,18.8 0,42S18.8,84 42,84 84,65.2 84,42 65.2,0 42,0Z"/>
+
+    <!-- Левая полоска -->
+    <path
+        android:fillColor="#1A1B22"
+        android:pathData="M30,24H36V60H30Z"/>
+
+    <!-- Правая полоска -->
+    <path
+        android:fillColor="#1A1B22"
+        android:pathData="M48,24H54V60H48Z"/>
+
+</vector>

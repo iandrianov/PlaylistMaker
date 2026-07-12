@@ -26,4 +26,7 @@
     <color name="text_primary">#FFFFFF</color>
     <color name="text_field_input">#1A1B22</color>
 
+    <!-- Tools -->
+    <color name="loading_circle">#3772E7</color>
+
 </resources>
