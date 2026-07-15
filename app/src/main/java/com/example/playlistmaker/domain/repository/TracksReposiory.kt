@@ -6,6 +6,6 @@ interface TracksRepository {
 
     fun searchTracks(
         expression: String,
-        consumer: (List<Track>) -> Unit
+        consumer: (List<Track>, Int) -> Unit
     )
 }

@@ -9,7 +9,7 @@ class TracksInteractorImpl(
 
     override fun searchTracks(
         expression: String,
-        consumer: (List<Track>) -> Unit
+        consumer: (List<Track>, Int) -> Unit
     ) {
         repository.searchTracks(
             expression,

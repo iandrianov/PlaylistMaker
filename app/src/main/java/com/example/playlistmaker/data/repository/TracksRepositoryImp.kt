@@ -12,7 +12,7 @@ class TracksRepositoryImpl(
 
     override fun searchTracks(
         expression: String,
-        consumer: (List<Track>) -> Unit
+        consumer: (List<Track>, Int) -> Unit
     ) {
 
         networkClient.doRequest(
@@ -38,7 +38,10 @@ class TracksRepositoryImpl(
                     )
                 }
 
-                consumer(tracks)
+                consumer(tracks, 200)
+            } else {
+
+                consumer(emptyList(), response.resultCode)
             }
         }
     }

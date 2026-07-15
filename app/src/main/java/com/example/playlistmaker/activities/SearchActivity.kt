@@ -262,11 +262,13 @@ class SearchActivity : AppCompatActivity() {
         historyBlock.visibility = View.GONE
         showLoading()
 
-        tracksInteractor.searchTracks(query) { tracks ->
+        tracksInteractor.searchTracks(query) { tracks, resultCode ->
 
             runOnUiThread {
 
-                if (tracks.isEmpty()) {
+                if (resultCode != 200) {
+                    showError()
+                } else if (tracks.isEmpty()) {
                     showEmpty()
                 } else {
                     tracksAdapter.updateTracks(tracks)
@@ -325,6 +327,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showError() {
+        progressBar.visibility = View.GONE
         placeholderContainer.visibility = View.VISIBLE
         showPlaceholder(
             R.drawable.ic_search_error,
