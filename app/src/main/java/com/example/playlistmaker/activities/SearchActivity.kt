@@ -1,22 +1,18 @@
 package com.example.playlistmaker.activities
 
-import android.content.Intent
-import android.net.LinkAddress
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -28,18 +24,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.activities.PlayerActivity.Companion.createIntent
 import com.example.playlistmaker.adapters.TracksAdapter
-import com.example.playlistmaker.model.Track
-import com.example.playlistmaker.model.TracksSearchResponse
-import com.example.playlistmaker.network.RetrofitClient
-import com.example.playlistmaker.utils.SearchHistory
+import com.example.playlistmaker.creator.Creator
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.logging.Logger
 
-const val PLAYLIST_MAKER_PREFERENCE = "playlist_maker_preferences"
 
 class SearchActivity : AppCompatActivity() {
 
@@ -63,8 +50,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var progressBar: CircularProgressIndicator
     private lateinit var clearHistoryButton: Button
 
-    private lateinit var searchHistory: SearchHistory
-
     private var lastSearchQuery: String = ""
 
     private val searchDebounceDelay = 2000L
@@ -81,6 +66,16 @@ class SearchActivity : AppCompatActivity() {
         if (query.isNotBlank()) {
             searchTracks(query)
         }
+    }
+
+    private val searchHistoryInteractor by lazy {
+        Creator.provideSearchHistoryInteractor(
+            getSharedPreferences("search_history", MODE_PRIVATE)
+        )
+    }
+
+    private val tracksInteractor by lazy {
+        Creator.provideTracksInteractor()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,7 +131,7 @@ class SearchActivity : AppCompatActivity() {
         tracksAdapter = TracksAdapter(emptyList()) { track ->
             if (!clickDebounce()) return@TracksAdapter
 
-            searchHistory.addTrack(track)
+            searchHistoryInteractor.addTrack(track)
 
             showHistory()
             startActivity(
@@ -159,19 +154,16 @@ class SearchActivity : AppCompatActivity() {
         historyRecyclerView.adapter = historyAdapter
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initSearchHistory() {
 
-        val sharedPreferences =
-            getSharedPreferences(PLAYLIST_MAKER_PREFERENCE, MODE_PRIVATE)
-
-        searchHistory = SearchHistory(sharedPreferences)
-
         historyAdapter.tracks =
-            searchHistory.getTracks() ?: emptyList()
+            searchHistoryInteractor.getTracks()
 
         historyAdapter.notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initListeners() {
 
         backButton.setOnClickListener {
@@ -190,7 +182,7 @@ class SearchActivity : AppCompatActivity() {
 
         clearHistoryButton.setOnClickListener {
 
-            searchHistory.clearHistory()
+            searchHistoryInteractor.clearHistory()
 
             historyAdapter.tracks = emptyList()
             historyAdapter.notifyDataSetChanged()
@@ -270,48 +262,24 @@ class SearchActivity : AppCompatActivity() {
         historyBlock.visibility = View.GONE
         showLoading()
 
+        tracksInteractor.searchTracks(query) { tracks ->
 
-        RetrofitClient.musicApi.searchTracks(query)
-            .enqueue(object : Callback<TracksSearchResponse> {
+            runOnUiThread {
 
-                override fun onResponse(
-                    call: Call<TracksSearchResponse>,
-                    response: Response<TracksSearchResponse>
-                ) {
-
-                    if (!response.isSuccessful) {
-                        progressBar.visibility = View.GONE
-                        showError()
-                        return
-                    }
-
-                    val tracks =
-                        response.body()?.results.orEmpty()
-
-                    if (tracks.isEmpty()) {
-                        progressBar.visibility = View.GONE
-                        showEmpty()
-                    } else {
-
-                        tracksAdapter.updateTracks(tracks)
-                        progressBar.visibility = View.GONE
-                        showContent()
-                    }
+                if (tracks.isEmpty()) {
+                    showEmpty()
+                } else {
+                    tracksAdapter.updateTracks(tracks)
+                    showContent()
                 }
+            }
+        }
 
-                override fun onFailure(
-                    call: Call<TracksSearchResponse>,
-                    t: Throwable
-                ) {
-                    progressBar.visibility = View.GONE
-                    showError()
-                }
-            })
     }
 
     private fun showHistory() {
 
-        val tracks = searchHistory.getTracks().orEmpty()
+        val tracks = searchHistoryInteractor.getTracks()
 
         val shouldShow =
             searchInput.hasFocus() &&
@@ -347,6 +315,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showEmpty() {
+        progressBar.visibility = View.GONE
         placeholderContainer.visibility = View.VISIBLE
         showPlaceholder(
             R.drawable.ic_search_failure,

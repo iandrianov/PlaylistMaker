@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.adapters.MovieAdapter
 import com.example.playlistmaker.model.MovieResponse
 import com.example.playlistmaker.R
-import com.example.playlistmaker.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -61,7 +60,7 @@ class FilmsSearchActivity : AppCompatActivity() {
 
             // Проверяем, что пользователь что-то ввел
             if (query.isNotEmpty()) {
-                searchMovies(query)
+//                searchMovies(query) TODO: Redo it after searching for music
             } else {
                 Toast.makeText(
                     this,
@@ -74,53 +73,53 @@ class FilmsSearchActivity : AppCompatActivity() {
 
 
 
-    private fun searchMovies(query: String) {
-        // Делаем запрос через Retrofit
-        RetrofitClient.movieApi.searchMovies(query)
-            .enqueue(object : Callback<MovieResponse> {
-
-                override fun onResponse(
-                    call: Call<MovieResponse>,
-                    response: Response<MovieResponse>
-                ) {
-
-                    if (response.isSuccessful) {
-
-                        val movies = response.body()?.results ?: emptyList()
-
-                        if (movies.isNotEmpty()) {
-
-                            // Обновляем RecyclerView
-                            movieAdapter.updateMovies(movies)
-
-                        } else {
-                            Toast.makeText(
-                                this@FilmsSearchActivity,
-                                "Ничего не найдено",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-
-                    } else {
-                        Toast.makeText(
-                            this@FilmsSearchActivity,
-                            "Ошибка сервера",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
-                override fun onFailure(
-                    call: Call<MovieResponse>,
-                    t: Throwable
-                ) {
-
-                    Toast.makeText(
-                        this@FilmsSearchActivity,
-                        "Ошибка подключения: ${t.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            })
-    }
+//    private fun searchMovies(query: String) {
+//        // Делаем запрос через Retrofit
+//        RetrofitClient.movieApi.searchMovies(query)
+//            .enqueue(object : Callback<MovieResponse> {
+//
+//                override fun onResponse(
+//                    call: Call<MovieResponse>,
+//                    response: Response<MovieResponse>
+//                ) {
+//
+//                    if (response.isSuccessful) {
+//
+//                        val movies = response.body()?.results ?: emptyList()
+//
+//                        if (movies.isNotEmpty()) {
+//
+//                            // Обновляем RecyclerView
+//                            movieAdapter.updateMovies(movies)
+//
+//                        } else {
+//                            Toast.makeText(
+//                                this@FilmsSearchActivity,
+//                                "Ничего не найдено",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                        }
+//
+//                    } else {
+//                        Toast.makeText(
+//                            this@FilmsSearchActivity,
+//                            "Ошибка сервера",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
+//                }
+//
+//                override fun onFailure(
+//                    call: Call<MovieResponse>,
+//                    t: Throwable
+//                ) {
+//
+//                    Toast.makeText(
+//                        this@FilmsSearchActivity,
+//                        "Ошибка подключения: ${t.message}",
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                }
+//            })
+//    }
 }

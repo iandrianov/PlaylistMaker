@@ -1,6 +1,5 @@
-package com.example.playlistmaker.model
+package com.example.playlistmaker.domain.model
 
-import android.system.StructTimeval
 
 data class Track(
     val trackId: Int,

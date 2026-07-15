@@ -1,5 +1,6 @@
 package com.example.playlistmaker.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.activities.SearchActivity
-import com.example.playlistmaker.model.Track
-import com.google.android.material.button.MaterialButton
+import com.example.playlistmaker.domain.model.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -57,7 +56,8 @@ class TracksAdapter(
         }
     }
 
-    fun updateTracks(newTraks: List<com.example.playlistmaker.model.Track>) {
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateTracks(newTraks: List<com.example.playlistmaker.domain.model.Track>) {
         tracks = newTraks
         notifyDataSetChanged()
     }
