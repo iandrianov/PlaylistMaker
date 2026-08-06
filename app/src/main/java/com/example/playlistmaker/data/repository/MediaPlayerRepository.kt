@@ -1,12 +1,14 @@
-package com.example.playlistmaker.player
+package com.example.playlistmaker.data.repository
 
 import android.media.MediaPlayer
+import com.example.playlistmaker.domain.repository.PlayerRepository
+import com.example.playlistmaker.domain.model.PlayerState
 
-class MediaPlayerRepository {
+class MediaPlayerRepository : PlayerRepository {
     private val mediaPlayer = MediaPlayer()
     private var playerState = PlayerState.DEFAULT
 
-    fun prepare(
+    override fun prepare(
         url: String,
         onPrepared: () -> Unit,
         onCompletion: () -> Unit
@@ -26,25 +28,25 @@ class MediaPlayerRepository {
         mediaPlayer.prepareAsync()
     }
 
-    fun start(){
+    override fun start(){
         mediaPlayer.start()
         playerState = PlayerState.PLAYING
     }
 
-    fun pause(){
+    override fun pause(){
         mediaPlayer.pause()
         playerState = PlayerState.PAUSED
     }
 
-    fun currentPosition(): Int {
+    override fun currentPosition(): Int {
         return mediaPlayer.currentPosition
     }
 
-    fun release(){
+    override fun release(){
         mediaPlayer.release()
     }
 
-    fun getPlayerState(): PlayerState {
+    override fun getPlayerState(): PlayerState {
         return playerState
     }
 

@@ -2,11 +2,9 @@ package com.example.playlistmaker.activities
 
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -18,9 +16,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.adapters.dpToPx
-import com.example.playlistmaker.model.Track
-import com.example.playlistmaker.player.MediaPlayerRepository
-import com.example.playlistmaker.player.PlayerState
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.model.Track
+import com.example.playlistmaker.domain.model.PlayerState
 import java.text.SimpleDateFormat
 import java.time.OffsetDateTime
 import java.util.Date
@@ -31,7 +29,9 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var playButton: ImageButton
     private lateinit var currentTime: TextView
 
-    private val repository = MediaPlayerRepository()
+    private val playerInteractor by lazy {
+        Creator.providePlayerInteractor()
+    }
     private val handler = Handler(Looper.getMainLooper())
     companion object {
         const val EXTRA_TRACK_NAME = "extra_track_name"
@@ -72,7 +72,7 @@ class PlayerActivity : AppCompatActivity() {
         initViews()
         initListeners()
 
-        repository.prepare(url,     onPrepared = {
+        playerInteractor.prepare(url,     onPrepared = {
             playButton.isEnabled = true
         },
             onCompletion = {
@@ -137,14 +137,14 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         playButton.setOnClickListener {
-                when(repository.getPlayerState()){
+                when(playerInteractor.getPlayerState()){
                     PlayerState.PAUSED, PlayerState.PREPARED -> {
-                        repository.start()
+                        playerInteractor.start()
                         handler.post(updateProgressRunnable)
                         playButton.setImageResource(R.drawable.ic_play_button_pause_84_84)
                     }
                     PlayerState.PLAYING -> {
-                        repository.pause()
+                        playerInteractor.pause()
                         handler.removeCallbacks(updateProgressRunnable)
                         playButton.setImageResource(R.drawable.ic_play_btn_84_84)
                     }
@@ -180,11 +180,11 @@ class PlayerActivity : AppCompatActivity() {
         super.onDestroy()
 
         handler.removeCallbacks(updateProgressRunnable)
-        repository.release()
+        playerInteractor.release()
     }
 
     private fun updateProgress() {
-        val position = repository.currentPosition()
+        val position = playerInteractor.currentPosition()
 
         currentTime.text = SimpleDateFormat(
             "mm:ss",
