@@ -6,9 +6,12 @@ plugins {
 }
 
 android {
-    namespace = "com.example.playlistmaker"
+    namespace = "com.example.mymovies"
     compileSdk {
         version = release(36)
+    }
+    buildFeatures {
+        viewBinding = true
     }
 
     defaultConfig {
@@ -51,5 +54,12 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
+    implementation(libs.moxy)
+    implementation(libs.moxy.android)
+    implementation(libs.moxy.compiler)
+    implementation(libs.recyclerview)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.activity.ktx)
 
 }

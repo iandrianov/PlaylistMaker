@@ -25,5 +25,7 @@
     <string name="track_release_date" translatable="false">Год</string>
     <string name="track_genre" translatable="false">Жанр</string>
     <string name="track_country" translatable="false">Страна</string>
+    <string name="nothing_found" translatable="false">Ничего не найдено</string>
+    <string name="something_went_wrong" translatable="false">Что-то пошло не так</string>
 </resources>
 
