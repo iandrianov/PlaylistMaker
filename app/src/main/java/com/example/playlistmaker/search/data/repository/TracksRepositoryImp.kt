@@ -1,10 +1,10 @@
-package com.example.playlistmaker.data.repository
+package com.example.playlistmaker.search.data.repository
 
 import com.example.playlistmaker.data.dto.TracksSearchResponse
 import com.example.playlistmaker.data.network.NetworkClient
 import com.example.playlistmaker.data.network.TracksSearchRequest
 import com.example.playlistmaker.domain.model.Track
-import com.example.playlistmaker.domain.repository.TracksRepository
+import com.example.playlistmaker.search.domain.repository.TracksRepository
 
 class TracksRepositoryImpl(
     private val networkClient: NetworkClient

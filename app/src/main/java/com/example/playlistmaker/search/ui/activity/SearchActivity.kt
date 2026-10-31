@@ -1,4 +1,4 @@
-package com.example.playlistmaker.activities
+package com.example.playlistmaker.search.ui.activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -14,6 +15,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
@@ -22,11 +24,12 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.activities.PlayerActivity.Companion.createIntent
+import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.adapters.TracksAdapter
 import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.search.ui.view_model.SearchScreenState
+import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import com.google.android.material.progressindicator.CircularProgressIndicator
-
 
 class SearchActivity : AppCompatActivity() {
 
@@ -36,7 +39,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyRecyclerView: RecyclerView
     private lateinit var historyAdapter: TracksAdapter
 
-    private lateinit var emptyPlaceholder: LinearLayout
     private lateinit var placeholderContainer: LinearLayout
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderText: TextView
@@ -60,6 +62,43 @@ class SearchActivity : AppCompatActivity() {
 
     private val CLICK_DEBOUNCE_DELAY = 1000L
 
+    private val viewModel: SearchViewModel by viewModels {
+        SearchViewModel.Companion.getFactory(
+            Creator.provideTracksInteractor(),
+            Creator.provideSearchHistoryInteractor(
+                getSharedPreferences("search_history", MODE_PRIVATE)
+            )
+        )
+    }
+
+    private fun observeViewModel() {
+        viewModel.screenStateLiveData.observe(this) { state ->
+            when (state) {
+                SearchScreenState.Loading -> showLoading()
+                is SearchScreenState.Content -> {
+                    tracksAdapter.updateTracks(state.tracks)
+                    showContent()
+                }
+
+                SearchScreenState.Error -> showError()
+                SearchScreenState.Empty -> {
+                    tracksAdapter.updateTracks(emptyList())
+                    showEmpty()
+                }
+
+                null -> Unit
+            }
+
+        }
+    }
+
+    private fun observeSearchHistory() {
+        viewModel.searchHistoryLiveData.observe(this) { tracks ->
+            historyAdapter.updateTracks(tracks)
+            showHistory()
+        }
+    }
+
     private val searchRunnable = Runnable {
         val query = searchInput.text.toString()
 
@@ -68,15 +107,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private val searchHistoryInteractor by lazy {
-        Creator.provideSearchHistoryInteractor(
-            getSharedPreferences("search_history", MODE_PRIVATE)
-        )
-    }
-
-    private val tracksInteractor by lazy {
-        Creator.provideTracksInteractor()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,8 +128,10 @@ class SearchActivity : AppCompatActivity() {
 
         initViews()
         initRecyclerViews()
-        initSearchHistory()
         initListeners()
+        observeViewModel()
+        observeSearchHistory()
+        viewModel.loadSearchHistory()
     }
 
     private fun initViews() {
@@ -131,11 +163,9 @@ class SearchActivity : AppCompatActivity() {
         tracksAdapter = TracksAdapter(emptyList()) { track ->
             if (!clickDebounce()) return@TracksAdapter
 
-            searchHistoryInteractor.addTrack(track)
-
-            showHistory()
+            viewModel.addTrackToHistory(track)
             startActivity(
-                createIntent(this, track)
+                PlayerActivity.Companion.createIntent(this, track)
             )
         }
 
@@ -143,26 +173,16 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.adapter = tracksAdapter
 
         historyAdapter = TracksAdapter(emptyList()) { track ->
-
             if (!clickDebounce()) return@TracksAdapter
+            viewModel.addTrackToHistory(track)
             startActivity(
-                createIntent(this, track)
+                PlayerActivity.Companion.createIntent(this, track)
             )
         }
 
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
         historyRecyclerView.adapter = historyAdapter
     }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun initSearchHistory() {
-
-        historyAdapter.tracks =
-            searchHistoryInteractor.getTracks()
-
-        historyAdapter.notifyDataSetChanged()
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     private fun initListeners() {
 
@@ -181,13 +201,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         clearHistoryButton.setOnClickListener {
-
-            searchHistoryInteractor.clearHistory()
-
-            historyAdapter.tracks = emptyList()
-            historyAdapter.notifyDataSetChanged()
-
-            showHistory()
+            viewModel.clearSearchHistory()
         }
 
         retryButton.setOnClickListener {
@@ -256,46 +270,20 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchTracks(query: String) {
-
         lastSearchQuery = query
-
         historyBlock.visibility = View.GONE
-        showLoading()
-
-        tracksInteractor.searchTracks(query) { tracks, resultCode ->
-
-            runOnUiThread {
-
-                if (resultCode != 200) {
-                    showError()
-                } else if (tracks.isEmpty()) {
-                    showEmpty()
-                } else {
-                    tracksAdapter.updateTracks(tracks)
-                    showContent()
-                }
-            }
-        }
+        viewModel.searchTracks(query)
 
     }
 
     private fun showHistory() {
-
-        val tracks = searchHistoryInteractor.getTracks()
-
         val shouldShow =
             searchInput.hasFocus() &&
                     searchInput.text.isEmpty() &&
-                    tracks.isNotEmpty()
+                    historyAdapter.itemCount > 0
 
-        if (shouldShow) {
-
-            historyAdapter.updateTracks(tracks)
-
-            historyBlock.visibility = View.VISIBLE
-        } else {
-            historyBlock.visibility = View.GONE
-        }
+        historyBlock.visibility =
+            if (shouldShow) View.VISIBLE else View.GONE
     }
 
     private fun showPlaceholder(
