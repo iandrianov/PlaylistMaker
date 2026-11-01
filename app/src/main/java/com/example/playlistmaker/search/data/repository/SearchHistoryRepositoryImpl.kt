@@ -1,8 +1,9 @@
-package com.example.playlistmaker.data.repository
+package com.example.playlistmaker.search.data.repository
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.playlistmaker.domain.model.Track
-import com.example.playlistmaker.domain.repository.SearchHistoryRepository
+import com.example.playlistmaker.search.domain.repository.SearchHistoryRepository
 import com.google.gson.Gson
 
 
@@ -26,6 +27,7 @@ class SearchHistoryRepositoryImpl(
     }
 
     override fun addTrack(track: Track) {
+        Log.d("SearchHistory", "Сохраняем трек: ${track.trackName}")
         val tracks = getTracks()?.toMutableList()
         tracks?.removeIf { it.trackId == track.trackId }
 
@@ -38,10 +40,12 @@ class SearchHistoryRepositoryImpl(
         }
 
         saveTracks(tracks?.toList() ?: emptyList())
+        Log.d("SearchHistory", "После сохранения: ${getTracks().size}")
     }
 
     private fun saveTracks(tracks:List<Track>){
         val json =  gson.toJson(tracks)
+        Log.d("SearchHistory", "Записываем JSON: $json")
         sharedPreferences.edit().putString(SEARCH_HISTORY_KEY,json).apply()
     }
 }

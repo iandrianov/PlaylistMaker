@@ -1,5 +1,4 @@
-package com.example.playlistmaker.domain.repository
-
+package com.example.playlistmaker.search.domain.repository
 
 import com.example.playlistmaker.domain.model.Track
 
