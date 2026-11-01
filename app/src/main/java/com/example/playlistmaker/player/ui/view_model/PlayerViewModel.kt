@@ -14,21 +14,22 @@ class PlayerViewModel(
     private val playerInteractor: PlayerInteractor
 ) : ViewModel() {
 
-    private val playerState = MutableLiveData(PlayerState.DEFAULT)
-    val playerStateLiveData: LiveData<PlayerState> = playerState
-
-    private val currentPosition = MutableLiveData(0)
-    val currentPositionLiveData: LiveData<Int> = currentPosition
+    private val screenState = MutableLiveData(PlayerScreenState())
+    val screenStateLiveData: LiveData<PlayerScreenState> = screenState
 
     fun prepare(url: String) {
         playerInteractor.prepare(
             url,
             onPrepared = {
-                playerState.value = PlayerState.PREPARED
+                updateScreenState(
+                    playerState = PlayerState.PREPARED
+                )
             },
             onCompletion = {
-                playerState.value = PlayerState.PREPARED
-                currentPosition.value = 0
+                updateScreenState(
+                    playerState = PlayerState.PREPARED,
+                    currentPosition = 0
+                )
             }
         )
     }
@@ -37,12 +38,12 @@ class PlayerViewModel(
         when (playerInteractor.getPlayerState()) {
             PlayerState.PREPARED, PlayerState.PAUSED -> {
                 playerInteractor.start()
-                playerState.value = PlayerState.PLAYING
+                updateScreenState(playerState = PlayerState.PLAYING)
             }
 
             PlayerState.PLAYING -> {
                 playerInteractor.pause()
-                playerState.value = PlayerState.PAUSED
+                updateScreenState(playerState = PlayerState.PAUSED)
             }
 
             PlayerState.DEFAULT -> Unit
@@ -50,7 +51,21 @@ class PlayerViewModel(
     }
 
     fun updateProgress() {
-        currentPosition.value = playerInteractor.currentPosition()
+        updateScreenState(
+            currentPosition = playerInteractor.currentPosition()
+        )
+    }
+
+    private fun updateScreenState(
+        playerState: PlayerState? = null,
+        currentPosition: Int? = null
+    ) {
+        val currentState = screenState.value ?: PlayerScreenState()
+
+        screenState.value = currentState.copy(
+            playerState = playerState ?: currentState.playerState,
+            currentPosition = currentPosition ?: currentState.currentPosition
+        )
     }
 
     override fun onCleared() {
@@ -61,10 +76,11 @@ class PlayerViewModel(
     companion object {
         fun getFactory(
             playerInteractor: PlayerInteractor
-        ): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(playerInteractor)
+        ): ViewModelProvider.Factory =
+            viewModelFactory {
+                initializer {
+                    PlayerViewModel(playerInteractor)
+                }
             }
-        }
     }
 }

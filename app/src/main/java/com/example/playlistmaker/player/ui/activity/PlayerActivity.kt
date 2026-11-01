@@ -77,7 +77,7 @@ class PlayerActivity : AppCompatActivity() {
 
         val url = intent.getStringExtra(PREVIEW_URL) ?: return
 
-        if (viewModel.playerStateLiveData.value == PlayerState.DEFAULT) {
+        if (viewModel.screenStateLiveData.value?.playerState == PlayerState.DEFAULT) {
             viewModel.prepare(url)
         }
     }
@@ -135,8 +135,9 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.playerStateLiveData.observe(this) { state ->
-            when (state) {
+        viewModel.screenStateLiveData.observe(this) { state ->
+
+            when (state.playerState) {
                 PlayerState.DEFAULT -> {
                     playButton.isEnabled = false
                 }
@@ -160,10 +161,8 @@ class PlayerActivity : AppCompatActivity() {
                     handler.removeCallbacks(updateProgressRunnable)
                 }
             }
-        }
 
-        viewModel.currentPositionLiveData.observe(this) { position ->
-            currentTime.text = formatTrackTime(position)
+            currentTime.text = formatTrackTime(state.currentPosition)
         }
     }
 

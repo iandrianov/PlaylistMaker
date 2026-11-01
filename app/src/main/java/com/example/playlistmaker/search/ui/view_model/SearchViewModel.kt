@@ -1,4 +1,3 @@
-
 package com.example.playlistmaker.search.ui.view_model
 
 import androidx.lifecycle.LiveData
@@ -7,28 +6,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.search.domain.interactor.SearchHistoryInteractor
 import com.example.playlistmaker.search.domain.interactor.TracksInteractor
-import com.example.playlistmaker.domain.model.Track
 
 class SearchViewModel(
     private val tracksInteractor: TracksInteractor,
     private val searchHistoryInteractor: SearchHistoryInteractor
 ) : ViewModel() {
 
-    private val screenState = MutableLiveData<SearchScreenState>()
+    private var lastSearchQuery = ""
+
+    private val screenState = MutableLiveData(SearchScreenState())
     val screenStateLiveData: LiveData<SearchScreenState> = screenState
 
-    private val searchHistory = MutableLiveData<List<Track>>()
-    val searchHistoryLiveData: LiveData<List<Track>> = searchHistory
-
     fun loadSearchHistory() {
-        searchHistory.value = searchHistoryInteractor.getTracks()
+        updateScreenState(
+            searchHistory = searchHistoryInteractor.getTracks()
+        )
     }
 
     fun clearSearchHistory() {
         searchHistoryInteractor.clearHistory()
-        searchHistory.value = emptyList()
+        updateScreenState(searchHistory = emptyList())
     }
 
     fun addTrackToHistory(track: Track) {
@@ -39,23 +39,58 @@ class SearchViewModel(
     fun searchTracks(expression: String) {
         if (expression.isBlank()) return
 
-        screenState.value = SearchScreenState.Loading
+        lastSearchQuery = expression
+
+        updateScreenState(
+            searchResultState = SearchResultState.Loading
+        )
 
         tracksInteractor.searchTracks(expression) { foundTracks, resultCode ->
             when {
                 resultCode != 200 -> {
-                    screenState.postValue(SearchScreenState.Error)
+                    updateScreenState(
+                        searchResultState = SearchResultState.Error
+                    )
                 }
 
                 foundTracks.isEmpty() -> {
-                    screenState.postValue(SearchScreenState.Empty)
+                    updateScreenState(
+                        searchResultState = SearchResultState.Empty
+                    )
                 }
 
                 else -> {
-                    screenState.postValue(SearchScreenState.Content(foundTracks))
+                    updateScreenState(
+                        searchResultState = SearchResultState.Content(foundTracks)
+                    )
                 }
             }
         }
+    }
+
+    fun retrySearch() {
+        if (lastSearchQuery.isNotEmpty()) {
+            searchTracks(lastSearchQuery)
+        }
+    }
+
+    fun clearSearchResults() {
+        lastSearchQuery = ""
+        updateScreenState(
+            searchResultState = SearchResultState.Idle
+        )
+    }
+
+    private fun updateScreenState(
+        searchResultState: SearchResultState? = null,
+        searchHistory: List<Track>? = null
+    ) {
+        val currentState = screenState.value ?: SearchScreenState()
+
+        screenState.value = currentState.copy(
+            searchResultState = searchResultState ?: currentState.searchResultState,
+            searchHistory = searchHistory ?: currentState.searchHistory
+        )
     }
 
     companion object {

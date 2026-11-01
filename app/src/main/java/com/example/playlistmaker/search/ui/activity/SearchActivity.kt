@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -27,7 +26,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.adapters.TracksAdapter
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.search.ui.view_model.SearchScreenState
+import com.example.playlistmaker.search.ui.view_model.SearchResultState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import com.google.android.material.progressindicator.CircularProgressIndicator
 
@@ -52,8 +51,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var progressBar: CircularProgressIndicator
     private lateinit var clearHistoryButton: Button
 
-    private var lastSearchQuery: String = ""
-
     private val searchDebounceDelay = 2000L
 
     private val handler = Handler(Looper.getMainLooper())
@@ -73,31 +70,30 @@ class SearchActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         viewModel.screenStateLiveData.observe(this) { state ->
-            when (state) {
-                SearchScreenState.Loading -> showLoading()
-                is SearchScreenState.Content -> {
-                    tracksAdapter.updateTracks(state.tracks)
+
+            when (val resultState = state.searchResultState) {
+                SearchResultState.Loading -> showLoading()
+
+                is SearchResultState.Content -> {
+                    tracksAdapter.updateTracks(resultState.tracks)
                     showContent()
                 }
 
-                SearchScreenState.Error -> showError()
-                SearchScreenState.Empty -> {
-                    tracksAdapter.updateTracks(emptyList())
-                    showEmpty()
-                }
+                SearchResultState.Empty -> showEmpty()
 
-                null -> Unit
+                SearchResultState.Error -> showError()
+
+                SearchResultState.Idle -> {
+                    tracksAdapter.updateTracks(emptyList())
+                    showContent()
+                }
             }
 
-        }
-    }
-
-    private fun observeSearchHistory() {
-        viewModel.searchHistoryLiveData.observe(this) { tracks ->
-            historyAdapter.updateTracks(tracks)
+            historyAdapter.updateTracks(state.searchHistory)
             showHistory()
         }
     }
+
 
     private val searchRunnable = Runnable {
         val query = searchInput.text.toString()
@@ -130,7 +126,6 @@ class SearchActivity : AppCompatActivity() {
         initRecyclerViews()
         initListeners()
         observeViewModel()
-        observeSearchHistory()
         viewModel.loadSearchHistory()
     }
 
@@ -194,10 +189,8 @@ class SearchActivity : AppCompatActivity() {
             handler.removeCallbacks(searchRunnable)
             searchInput.setText("")
             searchInput.clearFocus()
-            tracksAdapter.updateTracks(emptyList())
             hideKeyboard()
-
-            showContent()
+            viewModel.clearSearchResults()
         }
 
         clearHistoryButton.setOnClickListener {
@@ -206,9 +199,7 @@ class SearchActivity : AppCompatActivity() {
 
         retryButton.setOnClickListener {
             handler.removeCallbacks(searchRunnable)
-            if (lastSearchQuery.isNotEmpty()) {
-                searchTracks(lastSearchQuery)
-            }
+            viewModel.retrySearch()
         }
 
         searchInput.setOnFocusChangeListener { _, _ ->
@@ -270,7 +261,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchTracks(query: String) {
-        lastSearchQuery = query
         historyBlock.visibility = View.GONE
         viewModel.searchTracks(query)
 
