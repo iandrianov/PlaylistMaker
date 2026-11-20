@@ -1,8 +1,8 @@
-package com.example.playlistmaker.domain.interactor
+package com.example.playlistmaker.search.domain.repository
 
 import com.example.playlistmaker.domain.model.Track
 
-interface TracksInteractor {
+interface TracksRepository {
 
     fun searchTracks(
         expression: String,

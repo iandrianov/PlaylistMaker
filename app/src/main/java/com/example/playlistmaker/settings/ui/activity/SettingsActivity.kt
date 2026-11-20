@@ -1,19 +1,33 @@
-package com.example.playlistmaker.activities
+package com.example.playlistmaker.settings.ui.activity
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.playlistmaker.utils.App
 import com.example.playlistmaker.R
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
+import com.example.playlistmaker.utils.PLAYLIST_MAKER_PREFERENCES
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
+    private val viewModel: SettingsViewModel by viewModels {
+        SettingsViewModel.Companion.getFactory(
+            Creator.provideSettingsInteractor(
+                getSharedPreferences(
+                    PLAYLIST_MAKER_PREFERENCES,
+                    MODE_PRIVATE
+                )
+            )
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,15 +48,24 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
-        val app = application as App
-
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
 
-
-        //themeSwitcher.isChecked = app.darkTheme
+        viewModel.darkThemeEnabledLiveData.observe(this) { isEnabled ->
+            if (themeSwitcher.isChecked != isEnabled) {
+                themeSwitcher.isChecked = isEnabled
+            }
+        }
 
         themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            app.switchTheme(checked)
+            viewModel.setDarkThemeEnabled(checked)
+
+            AppCompatDelegate.setDefaultNightMode(
+                if (checked) {
+                    AppCompatDelegate.MODE_NIGHT_YES
+                } else {
+                    AppCompatDelegate.MODE_NIGHT_NO
+                }
+            )
         }
 
         val backButton = findViewById<ImageView>(R.id.backButton)
@@ -106,4 +129,5 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
 }

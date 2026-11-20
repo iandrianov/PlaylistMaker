@@ -57,8 +57,8 @@ class TracksAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateTracks(newTraks: List<com.example.playlistmaker.domain.model.Track>) {
-        tracks = newTraks
+    fun updateTracks(newTracks: List<Track>) {
+        tracks = newTracks
         notifyDataSetChanged()
     }
 

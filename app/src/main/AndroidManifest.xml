@@ -14,10 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
         <activity
-            android:name=".activities.SearchActivity"
+            android:name=".search.ui.activity.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.PlayerActivity"
+            android:name=".player.ui.activity.PlayerActivity"
             android:exported="false" />
         <activity
             android:name=".activities.TimerActivity"
@@ -30,7 +30,7 @@
             android:exported="false"
             tools:ignore="MissingClass" />
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".settings.ui.activity.SettingsActivity"
             android:exported="false" />
         <activity
             android:name=".activities.FilmsSearchActivity"
